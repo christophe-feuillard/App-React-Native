@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View, Text, Image } from 'react-native';
 import * as Location from 'expo-location';
 import { useEffect, useState } from 'react';
-import MapView from 'react-native-maps';
 import axios from 'axios';
+import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
 
 export default function HomeScreen({ navigation }) {
@@ -10,11 +10,22 @@ export default function HomeScreen({ navigation }) {
     const [business, setBusiness] = useState(null);
     const [latitude, setLatitude] = useState("")
     const [longitude, setLongitude] = useState("")
+    const [businessDetails, setBusinessDetails] = useState({
+    name: '',
+    review_count: undefined,
+    rating: undefined,
+    price: '',
+    phone: undefined,
+    image: '',
+});
+
     const apiKey = 'SHBWO06_NfmrA1bzhHuSZBYcYB0228f-XNkjAikQ2jTKdTY2Wj11b_HD1l6tYi_ZwQhTPQp1pPJLi_lTNZv2Msr2eTdUOIULGN66DPLwLflfGQlKWa05Yu45mWfOZHYx';
+
     const headers = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${apiKey}`
     };
+
     const mapStyle = [
         {
             "elementType": "geometry",
@@ -182,14 +193,7 @@ export default function HomeScreen({ navigation }) {
 
             let { status } = await Location.requestForegroundPermissionsAsync()
 
-            if (status == 'granted') {
-                console.log('permission succesful')
-            } else {
-                console.log('permi non autorisé')
-            }
-
             const position = await Location.getCurrentPositionAsync()
-            console.log(position)
 
             setLatitude(position.coords.latitude)
             setLongitude(position.coords.longitude)
@@ -204,7 +208,6 @@ export default function HomeScreen({ navigation }) {
             })
             .then(response => {
             setBusiness(response.data.businesses);
-            // console.log(business);
             })
             .catch(error => {
             console.error(error);
@@ -212,9 +215,31 @@ export default function HomeScreen({ navigation }) {
         }
     }, [latitude, longitude]) // latitude et longitude = mes dépendances
 
+    const showBusinessDetails = (id) => {
+        if (latitude !== "" && longitude !== "") {
+            axios.get(`https://api.yelp.com/v3/businesses/${id}`, {
+            headers: headers
+            })
+            .then(response => {
+                setBusinessDetails(businessDetails => ({
+                    ...businessDetails,
+                    name: response.data.name,
+                    review_count: response.data.review_count,
+                    rating: response.data.rating,
+                    price: response.data.price,
+                    phone: response.data.display_phone,
+                    image: response.data.image_url,
+                }));
+            })
+            .catch(error => {
+            console.error(error);
+            });
+        }
+    }
+
     return (
     <View style={styles.container}>
-        <MapView 
+        <MapView
         showsUserLocation={true} 
         style={{height: '100%', width: '100%'}} 
         customMapStyle={mapStyle} 
@@ -225,9 +250,26 @@ export default function HomeScreen({ navigation }) {
             coordinate={business.coordinates}
             title={business.name}
             image={business.image}
+            tappable={true}
+            onPress={() => showBusinessDetails(business.id)}
             />
         ))}
         </MapView>
+        <View style={styles.card}>
+            <View>
+                <Image
+                    source={{ uri: businessDetails?.image }}
+                    style={styles.image}
+                />
+            </View>
+            <View>
+                <Text style={styles.cardtxt}>{businessDetails.name}</Text> 
+                <Text style={styles.cardtxt}>{businessDetails.review_count} Avis</Text> 
+                <Text style={styles.cardtxt}>{businessDetails.rating}/5</Text> 
+                <Text style={styles.cardtxt}>{businessDetails.price}</Text> 
+                <Text style={styles.cardtxt}>{businessDetails.phone}</Text> 
+            </View>
+        </View>
     </View>
     );
 }
@@ -239,5 +281,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  card: {
+    borderRadius: 20,
+    top: '75%',
+    height: 100,
+    width: '90%',
+    position: 'absolute',
+    backgroundColor: '#fff',
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  image: {
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
+    width: 130,
+    height: '100%',
+  },
+  cardtxt: {
+    fontSize: 14,
+    marginLeft: 10,
   },
 });
