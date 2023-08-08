@@ -10,14 +10,15 @@ export default function HomeScreen({ navigation }) {
     const [business, setBusiness] = useState(null);
     const [latitude, setLatitude] = useState("")
     const [longitude, setLongitude] = useState("")
+    const [card, setCard] = useState()
     const [businessDetails, setBusinessDetails] = useState({
-    name: '',
-    review_count: undefined,
-    rating: undefined,
-    price: '',
-    phone: undefined,
-    image: '',
-});
+        name: '',
+        review_count: undefined,
+        rating: undefined,
+        price: '',
+        phone: undefined,
+        image: '',
+    });
 
     const apiKey = 'SHBWO06_NfmrA1bzhHuSZBYcYB0228f-XNkjAikQ2jTKdTY2Wj11b_HD1l6tYi_ZwQhTPQp1pPJLi_lTNZv2Msr2eTdUOIULGN66DPLwLflfGQlKWa05Yu45mWfOZHYx';
 
@@ -221,6 +222,7 @@ export default function HomeScreen({ navigation }) {
             headers: headers
             })
             .then(response => {
+                setCard(true);
                 setBusinessDetails(businessDetails => ({
                     ...businessDetails,
                     name: response.data.name,
@@ -255,10 +257,12 @@ export default function HomeScreen({ navigation }) {
             />
         ))}
         </MapView>
+
+        {card && 
         <View style={styles.card}>
             <View>
                 <Image
-                    source={{ uri: businessDetails?.image }}
+                    source={{ uri: businessDetails.image }}
                     style={styles.image}
                 />
             </View>
@@ -270,6 +274,8 @@ export default function HomeScreen({ navigation }) {
                 <Text style={styles.cardtxt}>{businessDetails.phone}</Text> 
             </View>
         </View>
+        }
+    
     </View>
     );
 }

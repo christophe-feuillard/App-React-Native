@@ -5,12 +5,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // Screens
 import HomeScreen from './screens/HomeScreen';
-import DetailsScreen from './screens/DetailsScreen';
+import EventsScreen from './screens/EventsScreen';
 import SettingsScreen from './screens/SettingsScreen';
 
 // Screen names
 const homeName = "Home";
-const detailsName = "Details";
+const eventsScreen = "Evénements";
 const settingsName = "Settings";
 
 const Tab = createBottomTabNavigator();
@@ -28,7 +28,7 @@ function MainContainer() {
             if (rn === homeName) {
               iconName = focused ? 'home' : 'home-outline';
 
-            } else if (rn === detailsName) {
+            } else if (rn === eventsScreen) {
               iconName = focused ? 'list' : 'list-outline';
 
             } else if (rn === settingsName) {
@@ -54,7 +54,7 @@ function MainContainer() {
       >
 
         <Tab.Screen name={homeName} component={HomeScreen} />
-        <Tab.Screen name={detailsName} component={DetailsScreen} />
+        <Tab.Screen name={eventsScreen} component={EventsScreen} />
         <Tab.Screen name={settingsName} component={SettingsScreen} />
 
       </Tab.Navigator>
