@@ -5,7 +5,7 @@ import axios from 'axios';
 import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
 
-export default function HomeScreen({ navigation }) {
+export default function RestaurantsScreen({ navigation }) {
 
     const [business, setBusiness] = useState(null);
     const [latitude, setLatitude] = useState("")
@@ -260,14 +260,14 @@ export default function HomeScreen({ navigation }) {
 
         {card && 
         <View style={styles.card}>
-            <View>
+            <View style={styles.imgdiv}>
                 <Image
-                    source={{ uri: businessDetails.image }}
+                    source={businessDetails.image ? { uri: businessDetails.image } : null}
                     style={styles.image}
                 />
             </View>
             <View>
-                <Text style={styles.cardtxt}>{businessDetails.name}</Text> 
+                <Text style={styles.cardTitle}>{businessDetails.name}</Text> 
                 <Text style={styles.cardtxt}>{businessDetails.review_count} Avis</Text> 
                 <Text style={styles.cardtxt}>{businessDetails.rating}/5</Text> 
                 <Text style={styles.cardtxt}>{businessDetails.price}</Text> 
@@ -289,23 +289,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   card: {
-    borderRadius: 20,
+    borderRadius: 10,
     top: '75%',
     height: 100,
-    width: '90%',
+    width: '80%',
     position: 'absolute',
-    backgroundColor: '#fff',
+    backgroundColor: '#F3EFEF',
     display: 'flex',
     flexDirection: 'row',
   },
   image: {
-    borderTopLeftRadius: 20,
-    borderBottomLeftRadius: 20,
-    width: 130,
+  borderRadius: 10,
+    width: 150,
     height: '100%',
-  },
+    },
+  imgdiv: {
+    padding: 5,
+    },
   cardtxt: {
     fontSize: 14,
+    marginLeft: 10,
+  },
+  cardTitle: {
+    fontSize: 16,
+    color: 'navy',
+    fontWeight: "bold",
     marginLeft: 10,
   },
 });

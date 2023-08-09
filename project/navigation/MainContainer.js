@@ -4,12 +4,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // Screens
-import HomeScreen from './screens/HomeScreen';
+import RestaurantsScreen from './screens/RestaurantsScreen';
 import EventsScreen from './screens/EventsScreen';
 import SettingsScreen from './screens/SettingsScreen';
 
 // Screen names
-const homeName = "Home";
+const restaurantsScreen = "Restaurants";
 const eventsScreen = "Evénements";
 const settingsName = "Settings";
 
@@ -19,17 +19,17 @@ function MainContainer() {
   return (
     <NavigationContainer>
       <Tab.Navigator
-        initialRouteName={homeName}
+        initialRouteName={restaurantsScreen}
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
             let rn = route.name;
 
-            if (rn === homeName) {
-              iconName = focused ? 'home' : 'home-outline';
+            if (rn === restaurantsScreen) {
+              iconName = focused ? 'restaurant' : 'restaurant-outline';
 
             } else if (rn === eventsScreen) {
-              iconName = focused ? 'list' : 'list-outline';
+              iconName = focused ? 'calendar' : 'calendar';
 
             } else if (rn === settingsName) {
               iconName = focused ? 'settings' : 'settings-outline';
@@ -38,11 +38,11 @@ function MainContainer() {
             // You can return any component that you like here!
             return <Ionicons name={iconName} size={size} color={color} />;
           },
-          "tabBarActiveTintColor": "tomato",
+          "tabBarActiveTintColor": "navy",
           "tabBarInactiveTintColor": "grey",
           "tabBarLabelStyle": {
-            "paddingBottom": 10,
-            "fontSize": 10
+            "paddingBottom": 2,
+            "fontSize": 12
             },
           "tabBarStyle": [
             {
@@ -53,7 +53,7 @@ function MainContainer() {
         })}
       >
 
-        <Tab.Screen name={homeName} component={HomeScreen} />
+        <Tab.Screen name={restaurantsScreen} component={RestaurantsScreen} />
         <Tab.Screen name={eventsScreen} component={EventsScreen} />
         <Tab.Screen name={settingsName} component={SettingsScreen} />
 
