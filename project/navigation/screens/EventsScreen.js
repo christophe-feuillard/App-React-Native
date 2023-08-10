@@ -1,13 +1,12 @@
 
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Image, Pressable, Share  } from "react-native";
 import * as Contacts from 'expo-contacts';
 import axios from 'axios';
 
 export default function EventsScreen({ navigation }){
 
     const [data, setData] = useState([]);
-    const [filteredData, setFilteredData] = useState([]);
 
     const apiKey = 'SHBWO06_NfmrA1bzhHuSZBYcYB0228f-XNkjAikQ2jTKdTY2Wj11b_HD1l6tYi_ZwQhTPQp1pPJLi_lTNZv2Msr2eTdUOIULGN66DPLwLflfGQlKWa05Yu45mWfOZHYx';
 
@@ -17,12 +16,11 @@ export default function EventsScreen({ navigation }){
     };
     
     useEffect(() => {
-        axios.get(`https://api.yelp.com/v3/events?limit=6&sort_by=asc&location=France`, {
+        axios.get(`https://api.yelp.com/v3/events?limit=10&sort_by=asc&sort_on=popularity&location=France`, {
         headers: headers
         })
         .then(response => {
         setData(response.data.events);
-        // setFilteredData(response);
         })
         .catch(error => {
         console.error(error);
@@ -39,52 +37,46 @@ export default function EventsScreen({ navigation }){
 
                 if (data.length > 0) {
                 const contact = data[0];
-                console.log(contact);
+                // console.log(contact);
                 }
             }
         })();
     }, []);
 
-    // const fetchData = async (url, headers) => {
-
-    //     try {
-    //         const response = await fetch(url);
-    //         console.log(response)
-    //         const json = await response.json();
-    //         setData(json.results);
-    //         setFilteredData(json.results);
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // };
-
-    // const searchFilterFunction = (text) => {
-    //     if(text){  
-    //         const newData = data.filter(item => {
-    //             const itemData = item.name.first ? item.name.first.toUpperCase() : ''.toUpperCase();
-    //             const textData = text.toUpperCase();
-    //             return itemData.indexOf(textData) > -1;
-    //         })
-    //         setFilteredData(newData);
-    //     } else {
-    //         setFilteredData(data);
-    //     }
-    // }
+    const shareData = async (url) => {
+        try {
+           await Share.share({message: url});
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     return (
         <ScrollView>
-            <Text style={styles.textFriends}>{data.length} Résultats</Text>
+            <Text style={styles.textFriends}>{data.length} Résultats - à Paris</Text>
             {
                 data.map((item, index) => {
                     return (
                         <View key={index} style={styles.itemContainer}>
                             <Image
-                                source={{ uri: item.image_url }}
+                                source={item.image_url ? { uri: item.image_url } : null}
                                 style={styles.image}
                             />
-                            <View>
+                            <View style={styles.lesTextes}>
                                 <Text style={styles.textName}>{item.name}</Text>
-                                <Text style={styles.textEmail}>{item.description}</Text>
+                                <View style={styles.div1}>
+                                    <Text style={styles.textEmail}>{item.location.city}</Text>
+                                </View>
+                                <Text style={styles.paragraphe}>{item.description}</Text>
+                                <Pressable
+                                    style={styles.shareBtn}
+                                    color="navy"
+                                    onPress={async () => {
+                                    await shareData(item.event_site_url);
+                                    }}
+                                >
+                                    <Text style={styles.txtbutton}>PARTAGER</Text>
+                                </Pressable>
                             </View>
                         </View>
                     )
@@ -107,7 +99,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginLeft: 10,
-        marginTop: 10,
+        marginTop: 20,
+        marginRight: 65,
     },
     image: {
         width: 50,
@@ -116,12 +109,38 @@ const styles = StyleSheet.create({
     },
     textName: {
         fontSize: 17,
-        marginLeft: 10,
         fontWeight: "600",
     },
     textEmail: {
         fontSize: 14,
-        marginLeft: 10,
         color: "grey",
     },
+    shareBtn: {
+        marginTop: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 4,
+        backgroundColor: 'navy',
+        textAlign: 'center',
+        width: 140,
+    },
+    txtbutton: {
+        fontSize: 13,
+        lineHeight: 15,
+        letterSpacing: 0.25,
+        color: 'white',
+     },
+    lesTextes: {
+        marginLeft: 10,
+    },
+    div1: {
+        display: "flex",
+        flexDirection: "row",
+        width: 100,
+    },
+    description: {
+        overflow: "hidden",
+    }
 });

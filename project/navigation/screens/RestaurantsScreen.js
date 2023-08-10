@@ -196,6 +196,8 @@ export default function RestaurantsScreen({ navigation }) {
 
             const position = await Location.getCurrentPositionAsync()
 
+            console.log(position.coords.latitude)
+            console.log(position.coords.longitude)
             setLatitude(position.coords.latitude)
             setLongitude(position.coords.longitude)
         })()

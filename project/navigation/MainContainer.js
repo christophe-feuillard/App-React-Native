@@ -3,14 +3,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-// Screens
 import RestaurantsScreen from './screens/RestaurantsScreen';
 import EventsScreen from './screens/EventsScreen';
 import SettingsScreen from './screens/SettingsScreen';
 
-// Screen names
 const restaurantsScreen = "Restaurants";
-const eventsScreen = "Evénements";
+const eventsScreen = "Evénements populaires";
 const settingsName = "Settings";
 
 const Tab = createBottomTabNavigator();
@@ -35,7 +33,6 @@ function MainContainer() {
               iconName = focused ? 'settings' : 'settings-outline';
             }
 
-            // You can return any component that you like here!
             return <Ionicons name={iconName} size={size} color={color} />;
           },
           "tabBarActiveTintColor": "navy",
