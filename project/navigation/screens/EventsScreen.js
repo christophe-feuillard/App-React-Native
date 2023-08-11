@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, Image, Pressable, Share, Modal, Alert } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Image, Pressable, Share, Modal } from "react-native";
 import * as Contacts from 'expo-contacts';
 import axios from 'axios';
 
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
         lineHeight: 15,
         letterSpacing: 0.25,
         color: 'white',
-     },
+    },
     lesTextes: {
         marginLeft: 10,
     },

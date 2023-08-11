@@ -53,9 +53,9 @@ export default function SettingsScreen({ navigation }) {
     return (
       <SafeAreaView style={styles.container}>
         <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photo.base64 }} />
-        <Button title="Share" onPress={sharePic} />
-        {hasMediaLibraryPermission ? <Button title="Save" onPress={savePhoto} /> : undefined}
-        <Button title="Discard" onPress={() => setPhoto(undefined)} />
+        <Button color="navy" title="Share" onPress={sharePic} />
+        {hasMediaLibraryPermission ? <Button color="navy" title="Save" onPress={savePhoto} /> : undefined}
+        <Button color="navy" title="Discard" onPress={() => setPhoto(undefined)} />
       </SafeAreaView>
     );
   }
@@ -63,7 +63,7 @@ export default function SettingsScreen({ navigation }) {
   return (
     <Camera style={styles.container} ref={cameraRef}>
       <View style={styles.buttonContainer}>
-        <Button title="Take Pic" onPress={takePic} />
+        <Button color="navy" title="Take Pic" onPress={takePic} />
       </View>
       <StatusBar style="auto" />
     </Camera>
@@ -78,10 +78,10 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     backgroundColor: '#fff',
-    alignSelf: 'flex-end'
+    alignSelf: 'center'
   },
   preview: {
     alignSelf: 'stretch',
     flex: 1
-  }
+  },
 });

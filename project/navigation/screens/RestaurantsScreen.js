@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Image } from 'react-native';
+import { StyleSheet, View, Text, Image, Modal, Pressable } from 'react-native';
 import * as Location from 'expo-location';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -11,14 +11,15 @@ export default function RestaurantsScreen({ navigation }) {
     const [latitude, setLatitude] = useState("")
     const [longitude, setLongitude] = useState("")
     const [card, setCard] = useState()
+    const [modalVisible, setModalVisible] = useState(false);
     const [businessDetails, setBusinessDetails] = useState({
         name: '',
         review_count: undefined,
         rating: undefined,
         price: '',
-        phone: undefined,
         image: '',
     });
+    const [businessPhotos, setBusinessPhotos] = useState([])
 
     const apiKey = 'SHBWO06_NfmrA1bzhHuSZBYcYB0228f-XNkjAikQ2jTKdTY2Wj11b_HD1l6tYi_ZwQhTPQp1pPJLi_lTNZv2Msr2eTdUOIULGN66DPLwLflfGQlKWa05Yu45mWfOZHYx';
 
@@ -196,8 +197,8 @@ export default function RestaurantsScreen({ navigation }) {
 
             const position = await Location.getCurrentPositionAsync()
 
-            console.log(position.coords.latitude)
-            console.log(position.coords.longitude)
+            // console.log(position.coords.latitude)
+            // console.log(position.coords.longitude)
             setLatitude(position.coords.latitude)
             setLongitude(position.coords.longitude)
         })()
@@ -219,21 +220,23 @@ export default function RestaurantsScreen({ navigation }) {
     }, [latitude, longitude]) // latitude et longitude = mes dépendances
 
     const showBusinessDetails = (id) => {
+        // console.log(id);
         if (latitude !== "" && longitude !== "") {
             axios.get(`https://api.yelp.com/v3/businesses/${id}`, {
             headers: headers
             })
             .then(response => {
                 setCard(true);
+                setBusinessPhotos(response.data.photos)
                 setBusinessDetails(businessDetails => ({
                     ...businessDetails,
                     name: response.data.name,
                     review_count: response.data.review_count,
                     rating: response.data.rating,
                     price: response.data.price,
-                    phone: response.data.display_phone,
                     image: response.data.image_url,
                 }));
+                console.log(businessPhotos)
             })
             .catch(error => {
             console.error(error);
@@ -262,60 +265,147 @@ export default function RestaurantsScreen({ navigation }) {
 
         {card && 
         <View style={styles.card}>
+            <View style={styles.textDiv}>
+                <Text style={styles.cardTitle}>{businessDetails.name}</Text> 
+                <Text style={styles.cardtxt}>{businessDetails.review_count} Avis</Text> 
+                <Text style={styles.cardtxt}>{businessDetails.rating}/5</Text> 
+                <Text style={styles.cardtxt}>{businessDetails.price}</Text> 
+                { businessPhotos ? 
+                <Pressable
+                    style={styles.openModalBtn}
+                    onPress={() => setModalVisible(true)}
+                >
+                    <Text style={styles.txtbutton}>VOIR LES PHOTOS</Text>
+                </Pressable> : null
+                }
+            </View>
             <View style={styles.imgdiv}>
                 <Image
                     source={businessDetails.image ? { uri: businessDetails.image } : null}
                     style={styles.image}
                 />
             </View>
-            <View>
-                <Text style={styles.cardTitle}>{businessDetails.name}</Text> 
-                <Text style={styles.cardtxt}>{businessDetails.review_count} Avis</Text> 
-                <Text style={styles.cardtxt}>{businessDetails.rating}/5</Text> 
-                <Text style={styles.cardtxt}>{businessDetails.price}</Text> 
-                <Text style={styles.cardtxt}>{businessDetails.phone}</Text> 
-            </View>
         </View>
         }
+
+        <Modal
+            animationType="fade"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+            setModalVisible(!modalVisible);
+            }}
+        >
+            <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                    { businessPhotos.map((image) => {
+                        <View style={styles.imgDivModal}>
+                            <Image
+                                source={image ? { uri: image } : null}
+                                style={styles.imgModal}
+                            />
+                        </View>
+                    })}
+                    <Pressable
+                        style={styles.shareBtn}
+                        onPress={() => setModalVisible(!modalVisible)}>
+                        <Text style={styles.txtbutton}>Fermer</Text>
+                    </Pressable>
+                </View>
+            </View>
+        </Modal>
     
     </View>
     );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    height: '100%',
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  card: {
-    borderRadius: 10,
-    top: '75%',
-    height: 100,
-    width: '80%',
-    position: 'absolute',
-    backgroundColor: '#F3EFEF',
-    display: 'flex',
-    flexDirection: 'row',
-  },
-  image: {
-  borderRadius: 10,
-    width: 150,
-    height: '100%',
+    container: {
+        height: '100%',
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-  imgdiv: {
-    padding: 5,
+    card: {
+        borderRadius: 10,
+        top: '75%',
+        height: 150,
+        width: '85%',
+        position: 'absolute',
+        backgroundColor: '#F3EFEF',
+        display: 'flex',
+        flexDirection: 'row',
+        // justifyContent: "space-around"
     },
-  cardtxt: {
-    fontSize: 14,
-    marginLeft: 10,
-  },
-  cardTitle: {
-    fontSize: 16,
-    color: 'navy',
-    fontWeight: "bold",
-    marginLeft: 10,
-  },
+    image: {
+        borderRadius: 10,
+        width: 150,
+        height: '100%',
+    },
+    imgdiv: {
+        padding: 10,
+        maxWidth: 100,
+        maxHeight: 150,
+    },
+    imgDivModal: {
+        padding: 5,
+        maxWidth: 100,
+        maxHeight: 100,
+    },
+    imgModal: {
+        width: "100%",
+        height: "100%",
+    },
+    textDiv: {
+        padding: 10,
+        maxWidth: 200,
+    },
+    cardtxt: {
+        fontSize: 14,
+        marginLeft: 10,
+    },
+    cardTitle: {
+        fontSize: 16,
+        color: 'navy',
+        fontWeight: "bold",
+        marginLeft: 10,
+    },
+    openModalBtn: {
+        marginTop: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 4,
+        backgroundColor: 'black',
+        textAlign: 'center',
+        width: 160,
+    },
+    txtbutton: {
+        fontSize: 13,
+        lineHeight: 15,
+        letterSpacing: 0.25,
+        color: 'white',
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 35,
+        alignItems: 'center',
+        elevation: 5,
+        display: "flex",
+        flexWrap: "wrap",
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+    },
 });
