@@ -1,12 +1,17 @@
 
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, Image, Pressable, Share  } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Image, Pressable, Share, Modal, Alert } from "react-native";
 import * as Contacts from 'expo-contacts';
 import axios from 'axios';
 
 export default function EventsScreen({ navigation }){
 
+    const [modalVisible, setModalVisible] = useState(false);
     const [data, setData] = useState([]);
+    const [eventDetails, setEventDetails] = useState({
+        description: '',
+        cost: '',
+    });
 
     const apiKey = 'SHBWO06_NfmrA1bzhHuSZBYcYB0228f-XNkjAikQ2jTKdTY2Wj11b_HD1l6tYi_ZwQhTPQp1pPJLi_lTNZv2Msr2eTdUOIULGN66DPLwLflfGQlKWa05Yu45mWfOZHYx';
 
@@ -51,6 +56,27 @@ export default function EventsScreen({ navigation }){
         }
     };
 
+    const fetchEventDetails = (id) => {
+
+        if(eventDetails === eventDetails) {     
+            setModalVisible(true);
+
+            axios.get(`https://api.yelp.com/v3/events/${id}`, {
+            headers: headers
+            })
+            .then(response => {
+                setEventDetails(eventDetails => ({
+                    ...eventDetails,
+                    description: response.data.description,
+                    cost: response.data.cost,
+                }));
+            })
+            .catch(error => {
+            console.error(error);
+            });
+        }
+    }
+
     return (
         <ScrollView>
             <Text style={styles.textFriends}>{data.length} Résultats - à Paris</Text>
@@ -68,16 +94,44 @@ export default function EventsScreen({ navigation }){
                                     <Text style={styles.textEmail}>{item.location.city}</Text>
                                 </View>
                                 <Text style={styles.paragraphe}>{item.description}</Text>
-                                <Pressable
-                                    style={styles.shareBtn}
-                                    color="navy"
-                                    onPress={async () => {
-                                    await shareData(item.event_site_url);
-                                    }}
-                                >
-                                    <Text style={styles.txtbutton}>PARTAGER</Text>
-                                </Pressable>
+                                <View style={styles.btnSection}>                      
+                                    <Pressable
+                                        style={styles.shareBtn}
+                                        color="navy"
+                                        onPress={async () => {
+                                        await shareData(item.event_site_url);
+                                        }}
+                                    >
+                                        <Text style={styles.txtbutton}>PARTAGER</Text>
+                                    </Pressable>
+                                    <Pressable
+                                        style={styles.shareBtn}
+                                        onPress={() => fetchEventDetails(item.id)}
+                                    >
+                                        <Text style={styles.txtbutton}>INFO</Text>
+                                    </Pressable>
+                                </View>
                             </View>
+                            <Modal
+                                animationType="fade"
+                                transparent={true}
+                                visible={modalVisible}
+                                onRequestClose={() => {
+                                setModalVisible(!modalVisible);
+                                }}
+                            >
+                                <View style={styles.centeredView}>
+                                    <View style={styles.modalView}>
+                                        {eventDetails.cost ? <Text style={styles.modalText}>{eventDetails.cost} euro </Text> : null}
+                                        <Text style={styles.modalText}>{eventDetails.description}</Text>
+                                        <Pressable
+                                            style={styles.shareBtn}
+                                            onPress={() => setModalVisible(!modalVisible)}>
+                                            <Text style={styles.txtbutton}>Fermer</Text>
+                                        </Pressable>
+                                    </View>
+                                </View>
+                            </Modal>
                         </View>
                     )
                 })
@@ -100,7 +154,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginLeft: 10,
         marginTop: 20,
-        marginRight: 65,
+        width: "83%",
     },
     image: {
         width: 50,
@@ -142,5 +196,28 @@ const styles = StyleSheet.create({
     },
     description: {
         overflow: "hidden",
+    },
+    centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+    },
+    modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 35,
+    alignItems: 'center',
+    elevation: 5,
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+    btnSection: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-around",
     }
 });
