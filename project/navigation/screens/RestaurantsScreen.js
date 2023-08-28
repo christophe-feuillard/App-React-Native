@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Image, Modal, Pressable } from 'react-native';
+import { StyleSheet, View, Text, Image, Modal, Pressable, ScrollView } from 'react-native';
 import * as Location from 'expo-location';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -6,7 +6,7 @@ import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
 
 export default function RestaurantsScreen({ navigation }) {
-
+    // 2 requête api, 1 élément du téléphone (localisation)
     const [business, setBusiness] = useState(null);
     const [latitude, setLatitude] = useState("")
     const [longitude, setLongitude] = useState("")
@@ -298,19 +298,28 @@ export default function RestaurantsScreen({ navigation }) {
         >
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    { businessPhotos.map((image) => {
+                    <ScrollView style={styles.modalScrollView} horizontal={true}>
+                    { businessPhotos?.map((image, index) => (
                         <View style={styles.imgDivModal}>
                             <Image
+                                key={index}
                                 source={image ? { uri: image } : null}
                                 style={styles.imgModal}
                             />
                         </View>
-                    })}
-                    <Pressable
-                        style={styles.shareBtn}
-                        onPress={() => setModalVisible(!modalVisible)}>
-                        <Text style={styles.txtbutton}>Fermer</Text>
-                    </Pressable>
+                    ))}
+                    </ScrollView>
+                    <View style={styles.twoButton}>
+                        <Pressable
+                            style={styles.shareBtn}>
+                            <Text style={styles.txtbutton}>Prendre une photo</Text>
+                        </Pressable>
+                        <Pressable
+                            style={styles.shareBtn}
+                            onPress={() => setModalVisible(!modalVisible)}>
+                            <Text style={styles.txtbutton}>Fermer</Text>
+                        </Pressable>   
+                    </View>
                 </View>
             </View>
         </Modal>
@@ -350,8 +359,8 @@ const styles = StyleSheet.create({
     },
     imgDivModal: {
         padding: 5,
-        maxWidth: 100,
-        maxHeight: 100,
+        width: 120,
+        height: 120,
     },
     imgModal: {
         width: "100%",
@@ -395,17 +404,40 @@ const styles = StyleSheet.create({
         marginTop: 22,
     },
     modalView: {
-        margin: 20,
-        backgroundColor: 'white',
+        maxWidth: '85%',
+        maxHeight: 210,
+        backgroundColor: '#F3EFEF',
         borderRadius: 10,
-        padding: 35,
+        padding: 15,
         alignItems: 'center',
         elevation: 5,
         display: "flex",
         flexWrap: "wrap",
     },
+    // modalScrollView: {
+    //     height: '200',
+    // },
     modalText: {
         marginBottom: 15,
         textAlign: 'center',
     },
+    test: {
+        color: 'white',
+    },
+    shareBtn: {
+        marginTop: 10,
+        alignItems: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 12,
+        borderRadius: 4,
+        backgroundColor: 'black',
+        textAlign: 'center',
+    },
+    twoButton: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        width: 300,
+        height: 50,
+    }
 });

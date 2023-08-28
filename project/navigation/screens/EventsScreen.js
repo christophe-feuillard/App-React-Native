@@ -5,7 +5,7 @@ import * as Contacts from 'expo-contacts';
 import axios from 'axios';
 
 export default function EventsScreen({ navigation }){
-
+    // 2 requête api, 1 élement du téléphone (liste de contact)
     const [modalVisible, setModalVisible] = useState(false);
     const [data, setData] = useState([]);
     const [eventDetails, setEventDetails] = useState({
