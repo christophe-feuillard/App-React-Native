@@ -5,11 +5,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import RestaurantsScreen from './screens/RestaurantsScreen';
 import EventsScreen from './screens/EventsScreen';
-import SettingsScreen from './screens/SettingsScreen';
+import CameraScreen from './screens/CameraScreen';
 
 const restaurantsScreen = "Restaurants";
 const eventsScreen = "Evénements populaires";
-const settingsName = "Settings";
+const cameraScreen = "Camera";
 
 const Tab = createBottomTabNavigator();
 
@@ -29,8 +29,8 @@ function MainContainer() {
             } else if (rn === eventsScreen) {
               iconName = focused ? 'calendar' : 'calendar';
 
-            } else if (rn === settingsName) {
-              iconName = focused ? 'settings' : 'settings-outline';
+            } else if (rn === cameraScreen) {
+              iconName = focused ? 'camera' : 'camera-outline';
             }
 
             return <Ionicons name={iconName} size={size} color={color} />;
@@ -52,7 +52,7 @@ function MainContainer() {
 
         <Tab.Screen name={restaurantsScreen} component={RestaurantsScreen} />
         <Tab.Screen name={eventsScreen} component={EventsScreen} />
-        <Tab.Screen name={settingsName} component={SettingsScreen} />
+        <Tab.Screen name={cameraScreen} component={CameraScreen} />
 
       </Tab.Navigator>
     </NavigationContainer>

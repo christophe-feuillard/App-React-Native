@@ -1,12 +1,12 @@
 import { StyleSheet, View, Text, Image, Modal, Pressable, ScrollView } from 'react-native';
 import * as Location from 'expo-location';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
+import { useNavigation } from '@react-navigation/native';
 
-export default function RestaurantsScreen({ navigation }) {
-    // 2 requête api, 1 élément du téléphone (localisation)
+export default function RestaurantsScreen() {
     const [business, setBusiness] = useState(null);
     const [latitude, setLatitude] = useState("")
     const [longitude, setLongitude] = useState("")
@@ -21,13 +21,12 @@ export default function RestaurantsScreen({ navigation }) {
     });
     const [businessPhotos, setBusinessPhotos] = useState([])
 
+    const navigation = useNavigation();
     const apiKey = 'SHBWO06_NfmrA1bzhHuSZBYcYB0228f-XNkjAikQ2jTKdTY2Wj11b_HD1l6tYi_ZwQhTPQp1pPJLi_lTNZv2Msr2eTdUOIULGN66DPLwLflfGQlKWa05Yu45mWfOZHYx';
-
     const headers = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${apiKey}`
     };
-
     const mapStyle = [
         {
             "elementType": "geometry",
@@ -196,9 +195,6 @@ export default function RestaurantsScreen({ navigation }) {
             let { status } = await Location.requestForegroundPermissionsAsync()
 
             const position = await Location.getCurrentPositionAsync()
-
-            // console.log(position.coords.latitude)
-            // console.log(position.coords.longitude)
             setLatitude(position.coords.latitude)
             setLongitude(position.coords.longitude)
         })()
@@ -220,7 +216,6 @@ export default function RestaurantsScreen({ navigation }) {
     }, [latitude, longitude]) // latitude et longitude = mes dépendances
 
     const showBusinessDetails = (id) => {
-        // console.log(id);
         if (latitude !== "" && longitude !== "") {
             axios.get(`https://api.yelp.com/v3/businesses/${id}`, {
             headers: headers
@@ -300,9 +295,8 @@ export default function RestaurantsScreen({ navigation }) {
                 <View style={styles.modalView}>
                     <ScrollView style={styles.modalScrollView} horizontal={true}>
                     { businessPhotos?.map((image, index) => (
-                        <View style={styles.imgDivModal}>
+                        <View style={styles.imgDivModal} key={index}>
                             <Image
-                                key={index}
                                 source={image ? { uri: image } : null}
                                 style={styles.imgModal}
                             />
@@ -310,10 +304,11 @@ export default function RestaurantsScreen({ navigation }) {
                     ))}
                     </ScrollView>
                     <View style={styles.twoButton}>
-                        <Pressable
-                            style={styles.shareBtn}>
-                            <Text style={styles.txtbutton}>Prendre une photo</Text>
-                        </Pressable>
+                            <Pressable
+                                style={styles.shareBtn}
+                                onPress={() => navigation.navigate('CameraScreen')}>
+                                <Text style={styles.txtbutton}>Prendre une photo</Text>
+                            </Pressable>
                         <Pressable
                             style={styles.shareBtn}
                             onPress={() => setModalVisible(!modalVisible)}>
@@ -323,7 +318,6 @@ export default function RestaurantsScreen({ navigation }) {
                 </View>
             </View>
         </Modal>
-    
     </View>
     );
 }
