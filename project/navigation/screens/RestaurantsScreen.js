@@ -5,6 +5,7 @@ import axios from 'axios';
 import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
 import { useNavigation } from '@react-navigation/native';
+import { API_KEY } from '@env';
 
 export default function RestaurantsScreen() {
     const [business, setBusiness] = useState(null);
@@ -22,7 +23,7 @@ export default function RestaurantsScreen() {
     const [businessPhotos, setBusinessPhotos] = useState([])
     const navigation = useNavigation();
 
-    const apiKey = 'SHBWO06_NfmrA1bzhHuSZBYcYB0228f-XNkjAikQ2jTKdTY2Wj11b_HD1l6tYi_ZwQhTPQp1pPJLi_lTNZv2Msr2eTdUOIULGN66DPLwLflfGQlKWa05Yu45mWfOZHYx';
+    const apiKey = API_KEY;
     const headers = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${apiKey}`

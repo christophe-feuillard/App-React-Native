@@ -1,13 +1,14 @@
 
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, Image, Pressable } from "react-native";
+import { API_KEY } from '@env';
 import axios from 'axios';
 
 export default function CategoriesScreen({ navigation }){
 
     const [data, setData] = useState([]);
 
-    const apiKey = 'SHBWO06_NfmrA1bzhHuSZBYcYB0228f-XNkjAikQ2jTKdTY2Wj11b_HD1l6tYi_ZwQhTPQp1pPJLi_lTNZv2Msr2eTdUOIULGN66DPLwLflfGQlKWa05Yu45mWfOZHYx';
+    const apiKey = API_KEY;
 
     const headers = {
         'Content-Type': 'application/json',

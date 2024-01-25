@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, Image, Pressable, Share, Modal } from "react-native";
 import * as Contacts from 'expo-contacts';
 import axios from 'axios';
+import { API_KEY } from '@env';
 
 export default function EventsScreen({ navigation }){
 
@@ -13,7 +14,7 @@ export default function EventsScreen({ navigation }){
         cost: '',
     });
 
-    const apiKey = 'SHBWO06_NfmrA1bzhHuSZBYcYB0228f-XNkjAikQ2jTKdTY2Wj11b_HD1l6tYi_ZwQhTPQp1pPJLi_lTNZv2Msr2eTdUOIULGN66DPLwLflfGQlKWa05Yu45mWfOZHYx';
+    const apiKey = API_KEY;
 
     const headers = {
         'Content-Type': 'application/json',

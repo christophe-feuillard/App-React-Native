@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "axios": "^1.4.0",
-    "expo-contacts": "^12.2.0",
-    "react-native-safe-area-context": "^4.7.1",
-    "react-native-screens": "^3.24.0"
-  }
-}
