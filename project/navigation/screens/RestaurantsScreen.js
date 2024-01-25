@@ -20,8 +20,8 @@ export default function RestaurantsScreen() {
         image: '',
     });
     const [businessPhotos, setBusinessPhotos] = useState([])
-
     const navigation = useNavigation();
+
     const apiKey = 'SHBWO06_NfmrA1bzhHuSZBYcYB0228f-XNkjAikQ2jTKdTY2Wj11b_HD1l6tYi_ZwQhTPQp1pPJLi_lTNZv2Msr2eTdUOIULGN66DPLwLflfGQlKWa05Yu45mWfOZHYx';
     const headers = {
         'Content-Type': 'application/json',
@@ -306,7 +306,7 @@ export default function RestaurantsScreen() {
                     <View style={styles.twoButton}>
                             <Pressable
                                 style={styles.shareBtn}
-                                onPress={() => navigation.navigate('CameraScreen')}>
+                                onPress={() => navigation.navigate('categoriesScreen')}>
                                 <Text style={styles.txtbutton}>Prendre une photo</Text>
                             </Pressable>
                         <Pressable
