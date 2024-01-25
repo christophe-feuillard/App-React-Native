@@ -1,2 +1,2 @@
 # App mobile de localisation de restaurants et d'évènements à proximité
-(projet d'école)
+Projet d'école en HTML, CSS, React Native et en utilisant Expo.
